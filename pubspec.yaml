@@ -1,6 +1,8 @@
 name: emails_validator
 description: Simple and efficient email address validator for Dart. Validates email syntax without using regular expressions, following RFC standards with detailed debug information.
 version: 1.0.0
+homepage: https://github.com/stanislavworldin/emails_validator
+repository: https://github.com/stanislavworldin/emails_validator
 
 # Tags for pub.dev
 topics:
