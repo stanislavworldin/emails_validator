@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.1
+
+Updated example to use Flutter web application instead of console example.
+
 ## 1.0.0
 
 Initial release of the emails_validator package.
