@@ -17,7 +17,7 @@ void main() {
 
     // Verify that the app title is displayed
     expect(find.text('📧 Email Validator'), findsOneWidget);
-    
+
     // Verify that the email input field is present
     expect(find.byType(TextField), findsOneWidget);
   });

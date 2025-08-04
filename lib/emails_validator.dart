@@ -1,6 +1,17 @@
 /// Simple and efficient email address validator
 /// Validates email syntax without using regular expressions
+///
+/// This class provides static methods for validating email addresses
+/// according to RFC standards without using regular expressions.
+/// It includes detailed debug information and supports both single
+/// email validation and batch validation of email lists.
 class EmailsValidator {
+  /// Default constructor for EmailsValidator
+  ///
+  /// This constructor is provided for completeness, though the class
+  /// is designed to be used with static methods.
+  const EmailsValidator();
+
   /// Validates email address
   ///
   /// [email] - string to validate
