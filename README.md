@@ -2,6 +2,12 @@
 
 Simple and efficient email address validator for Dart. Validates email syntax without using regular expressions.
 
+## Live Demo
+
+Try the interactive web demo: **[Live Demo](https://stanislavworldin.github.io/emails_validator/)**
+
+The demo allows you to test email validation in real-time with detailed debug information.
+
 ## Features
 
 - ✅ Simple and clear validation logic
@@ -124,6 +130,36 @@ The validator outputs detailed debug information to the console:
    - Allowed characters: letters, numbers, hyphen
    - Hyphen cannot be first or last character of part
    - Last part (TLD) minimum 2 characters
+
+## Interactive Web Demo
+
+The project includes a Flutter Web demo application that demonstrates the email validation functionality.
+
+### Running Locally
+
+1. Navigate to the web demo directory:
+```bash
+cd web_validator
+```
+
+2. Install dependencies:
+```bash
+flutter pub get
+```
+
+3. Run the web application:
+```bash
+flutter run -d web-server --web-port 8080
+```
+
+4. Open your browser and go to `http://localhost:8080`
+
+### Features of the Demo
+
+- Real-time email validation
+- Detailed debug information display
+- Support for multiple email formats
+- Responsive web interface
 
 ## Testing
 
