@@ -1,0 +1,23 @@
+# Dart/Flutter related
+.dart_tool/
+build/
+.pub-cache/
+.pub/
+
+# IDE related
+.vscode/
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# OS related
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Generated files
+*.g.dart
+*.freezed.dart 
