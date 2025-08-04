@@ -12,10 +12,7 @@ class EmailValidatorApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Email Validator',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        useMaterial3: true,
-      ),
+      theme: ThemeData(primarySwatch: Colors.blue, useMaterial3: true),
       home: const EmailValidatorPage(),
     );
   }
@@ -146,18 +143,26 @@ class _EmailValidatorPageState extends State<EmailValidatorPage> {
                                     width: double.infinity,
                                     padding: const EdgeInsets.all(16),
                                     decoration: BoxDecoration(
-                                      color: _isValid! ? Colors.green.shade100 : Colors.red.shade100,
+                                      color: _isValid!
+                                          ? Colors.green.shade100
+                                          : Colors.red.shade100,
                                       borderRadius: BorderRadius.circular(8),
                                       border: Border.all(
-                                        color: _isValid! ? Colors.green : Colors.red,
+                                        color: _isValid!
+                                            ? Colors.green
+                                            : Colors.red,
                                         width: 2,
                                       ),
                                     ),
                                     child: Row(
                                       children: [
                                         Icon(
-                                          _isValid! ? Icons.check_circle : Icons.cancel,
-                                          color: _isValid! ? Colors.green : Colors.red,
+                                          _isValid!
+                                              ? Icons.check_circle
+                                              : Icons.cancel,
+                                          color: _isValid!
+                                              ? Colors.green
+                                              : Colors.red,
                                           size: 24,
                                         ),
                                         const SizedBox(width: 12),
@@ -167,7 +172,9 @@ class _EmailValidatorPageState extends State<EmailValidatorPage> {
                                             style: TextStyle(
                                               fontSize: 16,
                                               fontWeight: FontWeight.bold,
-                                              color: _isValid! ? Colors.green.shade800 : Colors.red.shade800,
+                                              color: _isValid!
+                                                  ? Colors.green.shade800
+                                                  : Colors.red.shade800,
                                             ),
                                           ),
                                         ),
@@ -241,7 +248,7 @@ class _EmailValidatorPageState extends State<EmailValidatorPage> {
                           ),
                           child: Padding(
                             padding: const EdgeInsets.all(24.0),
-        child: Column(
+                            child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 const Text(
@@ -257,7 +264,9 @@ class _EmailValidatorPageState extends State<EmailValidatorPage> {
                                   spacing: 8,
                                   runSpacing: 8,
                                   children: _exampleEmails.map((email) {
-                                    final isValid = EmailsValidator.validate(email);
+                                    final isValid = EmailsValidator.validate(
+                                      email,
+                                    );
                                     return InkWell(
                                       onTap: () => _useExampleEmail(email),
                                       child: Container(
@@ -266,10 +275,16 @@ class _EmailValidatorPageState extends State<EmailValidatorPage> {
                                           vertical: 8,
                                         ),
                                         decoration: BoxDecoration(
-                                          color: isValid ? Colors.green.shade50 : Colors.red.shade50,
-                                          borderRadius: BorderRadius.circular(6),
+                                          color: isValid
+                                              ? Colors.green.shade50
+                                              : Colors.red.shade50,
+                                          borderRadius: BorderRadius.circular(
+                                            6,
+                                          ),
                                           border: Border.all(
-                                            color: isValid ? Colors.green : Colors.red,
+                                            color: isValid
+                                                ? Colors.green
+                                                : Colors.red,
                                             width: 1,
                                           ),
                                         ),
@@ -277,7 +292,9 @@ class _EmailValidatorPageState extends State<EmailValidatorPage> {
                                           email,
                                           style: TextStyle(
                                             fontSize: 14,
-                                            color: isValid ? Colors.green.shade800 : Colors.red.shade800,
+                                            color: isValid
+                                                ? Colors.green.shade800
+                                                : Colors.red.shade800,
                                             fontWeight: FontWeight.w500,
                                           ),
                                         ),
@@ -305,9 +322,9 @@ class _EmailValidatorPageState extends State<EmailValidatorPage> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: color.withOpacity(0.3)),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Column(
         children: [
@@ -322,10 +339,7 @@ class _EmailValidatorPageState extends State<EmailValidatorPage> {
           const SizedBox(height: 4),
           Text(
             label,
-            style: TextStyle(
-              fontSize: 14,
-              color: color.withOpacity(0.8),
-            ),
+            style: TextStyle(fontSize: 14, color: color.withValues(alpha: 0.8)),
           ),
         ],
       ),

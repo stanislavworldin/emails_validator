@@ -135,32 +135,6 @@ The validator outputs detailed debug information to the console:
 
 The project includes a Flutter Web demo application that demonstrates the email validation functionality.
 
-### Running Locally
-
-1. Navigate to the web demo directory:
-```bash
-cd web_validator
-```
-
-2. Install dependencies:
-```bash
-flutter pub get
-```
-
-3. Run the web application:
-```bash
-flutter run -d web-server --web-port 8080
-```
-
-4. Open your browser and go to `http://localhost:8080`
-
-### Features of the Demo
-
-- Real-time email validation
-- Detailed debug information display
-- Support for multiple email formats
-- Responsive web interface
-
 ## Testing
 
 Run tests:
