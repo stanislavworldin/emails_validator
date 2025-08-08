@@ -6,6 +6,9 @@
 /// It includes detailed debug information and supports both single
 /// email validation and batch validation of email lists.
 class EmailsValidator {
+  /// Controls debug output from this package
+  static bool debugEnabled = true;
+
   /// Default constructor for EmailsValidator
   ///
   /// This constructor is provided for completeness, though the class
@@ -26,27 +29,37 @@ class EmailsValidator {
     }
 
     // Remove leading and trailing spaces
-    email = email.trim();
-    debugPrint('EmailsValidator: Email after trim: "$email"');
+    final trimmedEmail = email.trim();
+    if (trimmedEmail.isEmpty) {
+      debugPrint('EmailsValidator: Email is empty after trim');
+      return false;
+    }
+    debugPrint('EmailsValidator: Email after trim: "$trimmedEmail"');
 
     // Check minimum length
-    if (email.length < 5) {
+    if (trimmedEmail.length < 5) {
       debugPrint(
-          'EmailsValidator: Email too short (${email.length} characters)');
+          'EmailsValidator: Email too short (${trimmedEmail.length} characters)');
       return false;
     }
 
     // Check maximum length (254 characters according to RFC)
-    if (email.length > 254) {
+    if (trimmedEmail.length > 254) {
       debugPrint(
-          'EmailsValidator: Email too long (${email.length} characters)');
+          'EmailsValidator: Email too long (${trimmedEmail.length} characters)');
       return false;
     }
 
     // Look for @ symbol
-    final atIndex = email.indexOf('@');
+    final atIndex = trimmedEmail.indexOf('@');
     if (atIndex == -1) {
       debugPrint('EmailsValidator: Missing @ symbol');
+      return false;
+    }
+
+    // There must be exactly one @ symbol
+    if (atIndex != trimmedEmail.lastIndexOf('@')) {
+      debugPrint('EmailsValidator: More than one @ symbol found');
       return false;
     }
 
@@ -57,14 +70,14 @@ class EmailsValidator {
     }
 
     // Check that @ is not at the end
-    if (atIndex == email.length - 1) {
+    if (atIndex == trimmedEmail.length - 1) {
       debugPrint('EmailsValidator: @ is at the end of email');
       return false;
     }
 
     // Split into local part and domain
-    final localPart = email.substring(0, atIndex);
-    final domain = email.substring(atIndex + 1);
+    final localPart = trimmedEmail.substring(0, atIndex);
+    final domain = trimmedEmail.substring(atIndex + 1);
 
     debugPrint('EmailsValidator: Local part: "$localPart"');
     debugPrint('EmailsValidator: Domain: "$domain"');
@@ -222,7 +235,7 @@ class EmailsValidator {
       }
     }
 
-    // Last part (TLD) must be at least 1 character (for test domains)
+    // Last part (TLD) must be at least 1 character (for test/dev domains)
     final tld = parts.last;
     if (tld.isEmpty) {
       debugPrint('EmailsValidator: TLD too short (${tld.length} characters)');
@@ -343,6 +356,7 @@ class EmailsValidator {
 
 /// Function for debug output
 void debugPrint(String message) {
-  // Can be disabled in production
-  print('[DEBUG] $message');
+  if (EmailsValidator.debugEnabled) {
+    print('[DEBUG] $message');
+  }
 }

@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.2
+
+- Added `EmailsValidator.debugEnabled` flag to control DEBUG output
+- Strengthened validation: now ensures exactly one `@` symbol
+- Fixed documentation about minimum TLD length (minimum 1 character)
+- Example Flutter app: use `withValues` instead of `withOpacity`
+
 ## 1.0.1
 
 Updated example to use Flutter web application instead of console example.

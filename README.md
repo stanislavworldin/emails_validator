@@ -23,7 +23,7 @@ Add the dependency to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  emails_validator: ^1.0.0
+  emails_validator: ^1.0.2
 ```
 
 Then run:
@@ -129,7 +129,7 @@ The validator outputs detailed debug information to the console:
    - Each part no longer than 63 characters
    - Allowed characters: letters, numbers, hyphen
    - Hyphen cannot be first or last character of part
-   - Last part (TLD) minimum 2 characters
+   - Last part (TLD) minimum 1 character (e.g. test domains like .c)
 
 ## Interactive Web Demo
 
