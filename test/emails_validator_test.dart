@@ -615,5 +615,122 @@ void main() {
         expect(EmailsValidator.validate('user.name_tag@example.com'), isTrue);
       });
     });
+
+    group('Detailed API', () {
+      test('should return normalized value for valid email', () {
+        final result =
+            EmailsValidator.validateDetailed('  User.Name+tag@EXAMPLE.COM  ');
+
+        expect(result.isValid, isTrue);
+        expect(result.error, isNull);
+        expect(result.message, isNull);
+        expect(result.normalizedEmail, equals('User.Name+tag@example.com'));
+      });
+
+      test('should return explicit error for invalid email', () {
+        final result = EmailsValidator.validateDetailed('user@@example.com');
+
+        expect(result.isValid, isFalse);
+        expect(result.error, EmailValidationError.multipleAtSymbols);
+        expect(result.message, isNotEmpty);
+        expect(result.normalizedEmail, isNull);
+      });
+    });
+
+    group('Validation options', () {
+      test('should allow quoted local part by default', () {
+        expect(
+          EmailsValidator.validate('"john doe"@example.com'),
+          isTrue,
+        );
+      });
+
+      test('should reject quoted local part when disabled', () {
+        final options = EmailValidationOptions.standard.copyWith(
+          allowQuotedLocalPart: false,
+        );
+
+        expect(
+          EmailsValidator.validateWithOptions(
+            '"john doe"@example.com',
+            options: options,
+          ),
+          isFalse,
+        );
+      });
+
+      test('should keep domain literals disabled in standard profile', () {
+        expect(EmailsValidator.validate('user@[127.0.0.1]'), isFalse);
+      });
+
+      test('should support domain literals and bare IPv4 in relaxed profile',
+          () {
+        expect(
+          EmailsValidator.validateWithOptions(
+            'user@[127.0.0.1]',
+            options: EmailValidationOptions.relaxed,
+          ),
+          isTrue,
+        );
+        expect(
+          EmailsValidator.validateWithOptions(
+            'user@127.0.0.1',
+            options: EmailValidationOptions.relaxed,
+          ),
+          isTrue,
+        );
+      });
+
+      test('should allow one-label domains in relaxed profile', () {
+        expect(EmailsValidator.validate('user@localhost'), isFalse);
+        expect(
+          EmailsValidator.validateWithOptions(
+            'user@localhost',
+            options: EmailValidationOptions.relaxed,
+          ),
+          isTrue,
+        );
+      });
+    });
+
+    group('Extended batch API', () {
+      test('should validate list with custom options', () {
+        final emails = [
+          'user@localhost',
+          '"john doe"@example.com',
+          'bad@@example.com',
+        ];
+
+        final results = EmailsValidator.validateListWithOptions(
+          emails,
+          options: EmailValidationOptions.relaxed,
+        );
+
+        expect(results['user@localhost'], isTrue);
+        expect(results['"john doe"@example.com'], isTrue);
+        expect(results['bad@@example.com'], isFalse);
+      });
+
+      test('should filter valid and invalid with custom options', () {
+        final emails = [
+          'user@localhost',
+          'user@@example.com',
+          'user@example.com',
+        ];
+
+        final validEmails = EmailsValidator.getValidEmailsWithOptions(
+          emails,
+          options: EmailValidationOptions.relaxed,
+        );
+        final invalidEmails = EmailsValidator.getInvalidEmailsWithOptions(
+          emails,
+          options: EmailValidationOptions.relaxed,
+        );
+
+        expect(validEmails, contains('user@localhost'));
+        expect(validEmails, contains('user@example.com'));
+        expect(invalidEmails, contains('user@@example.com'));
+      });
+    });
   });
 }

@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.1.0
+
+- Rebuilt validator core for speed: single-pass parsing with early exits and reduced allocations.
+- Changed default `EmailsValidator.debugEnabled` to `false` to remove runtime overhead in production.
+- Added `EmailValidationError`, `EmailValidationResult`, and `validateDetailed()` for explicit failure reasons.
+- Added `EmailValidationOptions` with `standard` and `relaxed` profiles.
+- Added `validateWithOptions()`, `validateListWithOptions()`, `getValidEmailsWithOptions()`, and `getInvalidEmailsWithOptions()`.
+- Optimized duplicate handling in `validateList()` to linear-time counting.
+- Added benchmark script at `benchmark/benchmark.dart` and extended test coverage for the new API.
+
 ## 1.0.2
 
 - Added `EmailsValidator.debugEnabled` flag to control DEBUG output

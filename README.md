@@ -1,155 +1,140 @@
 # Emails Validator
 
-Simple and efficient email address validator for Dart. Validates email syntax without using regular expressions.
+Fast and strict email validator for Dart and Flutter.
 
-## Live Demo
-
-Try the interactive web demo: **[Live Demo](https://stanislavworldin.github.io/emails_validator/)**
-
-The demo allows you to test email validation in real-time with detailed debug information.
+The validator uses a low-allocation parser (no regular expressions), keeps
+legacy-compatible behavior by default, and now also supports detailed error
+codes and configurable validation profiles.
 
 ## Features
 
-- ✅ Simple and clear validation logic
-- ✅ No external dependencies
-- ✅ Detailed debug information
-- ✅ Support for validating lists of email addresses
-- ✅ RFC standards compliance
-- ✅ High performance
+- High-performance parser (`codeUnitAt`, early exits, no `split` in hot path)
+- Backward-compatible default validation behavior
+- Detailed validation result with exact failure reason
+- Custom validation options (`standard` and `relaxed` profiles)
+- Batch APIs for map/list validation with custom options
+- Optional debug logs (`debugEnabled`, disabled by default)
 
 ## Installation
 
-Add the dependency to your `pubspec.yaml`:
-
 ```yaml
 dependencies:
-  emails_validator: ^1.0.2
+  emails_validator: ^1.1.0
 ```
-
-Then run:
 
 ```bash
 dart pub get
 ```
 
-## Usage
-
-### Basic Validation
+## Quick start
 
 ```dart
 import 'package:emails_validator/emails_validator.dart';
 
 void main() {
-  // Validate single email
   final isValid = EmailsValidator.validate('user@example.com');
   print(isValid); // true
-  
-  // Validate invalid email
-  final isInvalid = EmailsValidator.validate('invalid-email');
-  print(isInvalid); // false
 }
 ```
 
-### Validating List of Email Addresses
+## Detailed validation
+
+```dart
+final result = EmailsValidator.validateDetailed('  User.Name+tag@EXAMPLE.COM  ');
+
+print(result.isValid);          // true
+print(result.normalizedEmail);  // User.Name+tag@example.com
+print(result.error);            // null
+```
+
+For invalid input:
+
+```dart
+final result = EmailsValidator.validateDetailed('user@@example.com');
+print(result.isValid); // false
+print(result.error);   // EmailValidationError.multipleAtSymbols
+print(result.message); // More than one @ symbol found
+```
+
+## Validation options
+
+```dart
+// Backward-compatible defaults.
+final standard = EmailsValidator.validate('user@localhost'); // false
+
+// Relaxed profile for internal tooling.
+final relaxed = EmailsValidator.validateWithOptions(
+  'user@localhost',
+  options: EmailValidationOptions.relaxed,
+); // true
+
+// Custom profile.
+final custom = EmailValidationOptions.standard.copyWith(
+  allowQuotedLocalPart: false,
+);
+final ok = EmailsValidator.validateWithOptions(
+  '"john doe"@example.com',
+  options: custom,
+); // false
+```
+
+## Batch APIs
 
 ```dart
 final emails = [
   'user@example.com',
   'invalid-email',
-  'test@domain.co.uk',
-  '@example.com',
+  'user@localhost',
 ];
 
-// Get validation results for all emails
 final results = EmailsValidator.validateList(emails);
-// Result: {'user@example.com': true, 'invalid-email': false, ...}
+// {'user@example.com': true, 'invalid-email': false, 'user@localhost': false}
 
-// Get only valid emails
-final validEmails = EmailsValidator.getValidEmails(emails);
-// Result: ['user@example.com', 'test@domain.co.uk']
+final relaxedResults = EmailsValidator.validateListWithOptions(
+  emails,
+  options: EmailValidationOptions.relaxed,
+);
+// {'user@example.com': true, 'invalid-email': false, 'user@localhost': true}
 
-// Get only invalid emails
-final invalidEmails = EmailsValidator.getInvalidEmails(emails);
-// Result: ['invalid-email', '@example.com']
+final valid = EmailsValidator.getValidEmailsWithOptions(
+  emails,
+  options: EmailValidationOptions.relaxed,
+);
 ```
 
-### Debug Information
+## Performance benchmark
 
-The validator outputs detailed debug information to the console:
+Run:
 
-```
-[DEBUG] EmailsValidator: Starting email validation: user@example.com
-[DEBUG] EmailsValidator: Email after trim: "user@example.com"
-[DEBUG] EmailsValidator: Local part: "user"
-[DEBUG] EmailsValidator: Domain: "example.com"
-[DEBUG] EmailsValidator: Email is valid!
+```bash
+dart run benchmark/benchmark.dart
 ```
 
-## Supported Formats
+Current local benchmark (March 3, 2026) shows `~3x+` speedup versus legacy
+implementation on both compatibility and extended datasets.
 
-### Valid Email Addresses
+## Debug logs
 
-- `user@example.com`
-- `test.email@domain.co.uk`
-- `user+tag@example.org`
-- `user.name@example.com`
-- `user_name@example.com`
-- `user-name@example.com`
-- `user123@example.com`
-- `user@subdomain.example.com`
+Debug logging is disabled by default:
 
-### Invalid Email Addresses
+```dart
+EmailsValidator.debugEnabled = true;
+```
 
-- `invalid-email` (no @)
-- `@example.com` (@ at beginning)
-- `user@` (no domain)
-- `user@.com` (empty domain part)
-- `user..name@example.com` (consecutive dots)
-- `user@-example.com` (hyphen at beginning of domain)
-- `user@example-.com` (hyphen at end of domain)
+## Validation limits
 
-## Validation Rules
-
-1. **General Rules:**
-   - Email cannot be null or empty
-   - Minimum length: 5 characters
-   - Maximum length: 254 characters
-   - Must contain exactly one @ symbol
-
-2. **Local Part (before @):**
-   - Cannot be empty
-   - Maximum length: 64 characters
-   - Allowed characters: letters, numbers, `!#$%&'*+-/=?^_`{|}~.`
-   - Dot cannot be first or last character
-
-3. **Domain (after @):**
-   - Cannot be empty
-   - Maximum length: 253 characters
-   - Must contain at least 2 parts (e.g., example.com)
-   - Each part no longer than 63 characters
-   - Allowed characters: letters, numbers, hyphen
-   - Hyphen cannot be first or last character of part
-   - Last part (TLD) minimum 1 character (e.g. test domains like .c)
-
-## Interactive Web Demo
-
-The project includes a Flutter Web demo application that demonstrates the email validation functionality.
+- Total length: 5..254
+- Local part: up to 64 chars
+- Domain: up to 253 chars
+- Domain label: up to 63 chars
+- Standard profile requires at least two domain labels (`example.com`)
 
 ## Testing
-
-Run tests:
 
 ```bash
 dart test
 ```
 
-## Performance
-
-The validator is optimized for high performance:
-- No regular expressions used
-- Minimal string operations
-- Efficient character checking
-
 ## License
 
-MIT License 
+MIT
